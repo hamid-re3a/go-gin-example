@@ -1,0 +1,76 @@
+version: '3.7'
+services:
+
+  back:
+    build:
+       context: .
+       dockerfile: Dockerfile
+    image: gin-blog_back
+    container_name: gin-blog_back
+    restart: always
+    depends_on:
+      - db
+      - redis
+    ports:
+      - 8000:8000
+    volumes:
+      - images:/app/gin-blog/upload/images/
+    networks:
+      gin-net:
+        ipv4_address: 172.14.0.200
+
+  db:
+    image: mysql:5.7
+    container_name: gin-blog_db
+    environment:
+      MYSQL_DATABASE: gin-blog
+      MYSQL_ROOT_PASSWORD: mytestPass
+    restart: always
+    # ports:
+    #     - 3306:3306
+    volumes:
+      - dbdata:/var/lib/mysql
+      # - ./template.sql:/docker-entrypoint-initdb.d/dump.sql
+    networks:
+      gin-net:
+        ipv4_address: 172.14.0.100
+
+  pma:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    container_name: gin-blog_pma
+    ports:
+        - 38012:80
+    depends_on:
+        - db
+    environment:
+        PMA_HOST: db
+    networks:
+      gin-net:
+        ipv4_address: 172.14.0.101
+
+  redis:
+    image: bitnami/redis:latest
+    environment:
+      REDIS_PASSWORD: mytestPass
+    container_name: gin-blog_redis
+    restart: always
+    # ports:
+    #   - 6379:6379
+    networks:
+      gin-net:
+        ipv4_address: 172.14.0.102
+
+networks:
+  gin-net:
+    name: gin-net
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.14.0.0/24
+
+volumes:
+  dbdata:
+  images:
+          
