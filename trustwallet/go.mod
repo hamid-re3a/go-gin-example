@@ -1,4 +1,4 @@
-module github.com/EDDYCJY/go-gin-example
+module trustwallet
 
 go 1.13
 

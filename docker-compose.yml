@@ -19,6 +19,19 @@ services:
       gin-net:
         ipv4_address: 172.14.0.200
 
+  trustwallet:
+    build:
+      context: trustwallet
+      dockerfile: Dockerfile.trustwallet
+    image: trustwallet
+    container_name: trustwallet
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      gin-net:
+        ipv4_address: 172.14.0.201
+
   db:
     image: mysql:5.7
     container_name: gin-blog_db
